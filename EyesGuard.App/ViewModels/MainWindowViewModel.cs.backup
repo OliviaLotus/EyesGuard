@@ -1,0 +1,144 @@
+using System.Collections.ObjectModel;
+using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using EyesGuard.Core.Abstractions;
+using EyesGuard.Core.Models;
+using EyesGuard.Core.Services;
+
+namespace EyesGuard.App.ViewModels;
+
+public partial class MainWindowViewModel : ViewModelBase, IAsyncDisposable
+{
+    // 子 ViewModels - 委托模式
+    public BreakControlViewModel BreakControl { get; }
+    public DashboardViewModel Dashboard { get; }
+    public BlueLightViewModel BlueLight { get; }
+    public SettingsViewModel Settings { get; }
+    public SceneManagementViewModel SceneManagement { get; }
+    public BrightnessViewModel Brightness { get; }
+    public UpdateViewModel Update { get; }
+    public StartupViewModel Startup { get; }
+    public SyncViewModel Sync { get; }
+
+    private readonly DispatcherTimer _scheduleTimer;
+    private readonly DispatcherTimer _scenarioTimer;
+
+    public MainWindowViewModel(
+        BreakControlViewModel breakControl,
+        DashboardViewModel dashboard,
+        BlueLightViewModel blueLight,
+        SettingsViewModel settings,
+        SceneManagementViewModel sceneManagement,
+        BrightnessViewModel brightness,
+        UpdateViewModel update,
+        StartupViewModel startup,
+        SyncViewModel sync)
+    {
+        BreakControl = breakControl;
+        Dashboard = dashboard;
+        BlueLight = blueLight;
+        Settings = settings;
+        SceneManagement = sceneManagement;
+        Brightness = brightness;
+        Update = update;
+        Startup = startup;
+        Sync = sync;
+
+        // 订阅子 ViewModel 事件
+        BreakControl.BreakAttentionRequested += (_, _) => BreakAttentionRequested?.Invoke(this, EventArgs.Empty);
+
+        // 定时器用于自动调度
+        _scheduleTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(30) };
+        _scheduleTimer.Tick += (_, _) => BlueLight.ApplyAutomaticSchedule();
+
+        _scenarioTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(15) };
+        _scenarioTimer.Tick += (_, _) => SceneManagement.ApplyAutomaticScenario();
+    }
+
+    public event EventHandler? BreakAttentionRequested;
+
+    // 保留的主窗口属性
+    [ObservableProperty] private int _selectedPageIndex = 0;
+    [ObservableProperty] private string _statusMessage = "护眼服务运行正常";
+
+    // 桌面小部件状态（待提取到 WidgetViewModel）
+    [ObservableProperty] private string _widgetStatusText = "准备中";
+    [ObservableProperty] private string _widgetMessage = "正在启动护眼服务";
+    [ObservableProperty] private string _widgetAccentColor = "#2DB879";
+
+    public async Task InitializeAsync()
+    {
+        // 初始化子 ViewModels
+        await Dashboard.InitializeAsync();
+
+        // 订阅 BreakControl 状态变化以更新 Widget
+        BreakControl.PropertyChanged += OnBreakControlChanged;
+
+        // 启动自动调度定时器
+        _scheduleTimer.Start();
+        _scenarioTimer.Start();
+
+        // 应用初始调度
+        BlueLight.ApplyAutomaticSchedule();
+        SceneManagement.ApplyAutomaticScenario();
+    }
+
+    private void OnBreakControlChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        // 更新桌面小部件状态
+        if (e.PropertyName is nameof(BreakControlViewModel.PhaseText)
+            or nameof(BreakControlViewModel.RestRemainingText)
+            or nameof(BreakControlViewModel.NextBreakText)
+            or nameof(BreakControlViewModel.WorkProgress))
+        {
+            UpdateWidgetState();
+        }
+    }
+
+    private void UpdateWidgetState()
+    {
+        WidgetStatusText = BreakControl.PhaseText;
+
+        if (BreakControl.IsResting)
+        {
+            WidgetMessage = $"请远眺并放松眼睛，还剩 {BreakControl.RestRemainingText} 秒";
+            WidgetAccentColor = "#E85A68";
+        }
+        else if (BreakControl.IsBreakPrompt)
+        {
+            WidgetMessage = "现在该休息了，给眼睛一点时间";
+            WidgetAccentColor = "#E85A68";
+        }
+        else if (BreakControl.WorkProgress >= 80)
+        {
+            WidgetMessage = $"下次休息还有 {BreakControl.NextBreakText}";
+            WidgetAccentColor = "#F29A38";
+        }
+        else
+        {
+            WidgetMessage = $"下次休息还有 {BreakControl.NextBreakText}";
+            WidgetAccentColor = "#2DB879";
+        }
+    }
+
+    [RelayCommand]
+    private void ToggleDesktopWidget() => Settings.DesktopWidgetEnabled = !Settings.DesktopWidgetEnabled;
+
+    public async ValueTask DisposeAsync()
+    {
+        // 取消订阅
+        BreakControl.PropertyChanged -= OnBreakControlChanged;
+
+        // 停止定时器
+        _scheduleTimer.Stop();
+        _scenarioTimer.Stop();
+
+        // 释放子 ViewModels
+        BreakControl.Dispose();
+        Dashboard.Dispose();
+        Settings.Dispose();
+
+        await Task.CompletedTask;
+    }
+}

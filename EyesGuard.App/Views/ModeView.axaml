@@ -1,0 +1,223 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:EyesGuard.App.ViewModels"
+             x:Class="EyesGuard.App.Views.ModeView"
+             x:DataType="vm:MainWindowViewModel">
+  <ScrollViewer>
+    <StackPanel Margin="28" Spacing="18">
+      <StackPanel>
+        <TextBlock Text="护眼模式" Classes="page-title" />
+        <TextBlock Text="调整显示效果并选择适合当前任务的用眼方案" Classes="muted" Margin="0,5,0,0" />
+      </StackPanel>
+
+      <Grid ColumnDefinitions="1.15*,*" ColumnSpacing="16">
+        <Border Classes="card">
+          <StackPanel Spacing="20">
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel><TextBlock Text="护眼模式" Classes="section-title"/><TextBlock Text="使用暖色覆盖降低夜间刺激" Classes="muted" Margin="0,4,0,0"/></StackPanel>
+              <ToggleSwitch Grid.Column="1" IsChecked="{Binding BlueLight.BlueLightEnabled, Mode=TwoWay}" />
+            </Grid>
+            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+              <TextBlock Text="暖色强度" />
+              <TextBlock Grid.Column="1" Text="{Binding BlueLight.BlueLightIntensity, StringFormat='{}{0}%'}" />
+              <Slider Grid.Row="1" Grid.ColumnSpan="2" Minimum="0" Maximum="100"
+                      Value="{Binding BlueLight.BlueLightIntensity, Mode=TwoWay}" Margin="0,8,0,0" />
+            </Grid>
+            <Separator />
+            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+              <StackPanel>
+                <TextBlock Text="显示器亮度" />
+                <TextBlock Text="通过 DDC/CI 调节外接显示器" Classes="muted" Margin="0,4,0,0" TextWrapping="Wrap" />
+              </StackPanel>
+              <TextBlock Grid.Column="1" Text="{Binding Brightness.BrightnessPercent, StringFormat='{}{0}%'}" />
+              <Slider Grid.Row="1" Grid.ColumnSpan="2" Minimum="0" Maximum="100"
+                      IsEnabled="{Binding Brightness.BrightnessSupported}"
+                      Value="{Binding Brightness.BrightnessPercent, Mode=TwoWay}" Margin="0,8,0,0" />
+            </Grid>
+            <TextBlock Text="{Binding Brightness.BrightnessStatus}" Classes="muted" TextWrapping="Wrap" />
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel><TextBlock Text="跟随系统深色模式"/><TextBlock Text="系统主题变化时自动切换界面" Classes="muted" Margin="0,4,0,0"/></StackPanel>
+              <ToggleSwitch Grid.Column="1" IsChecked="{Binding Settings.FollowSystemTheme, Mode=TwoWay}" />
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <Border Grid.Column="1" Classes="card">
+          <StackPanel Spacing="16">
+            <TextBlock Text="阅读预览" Classes="section-title" />
+            <Border Background="#FFF4DF" BorderBrush="#F0D7AE" BorderThickness="1" CornerRadius="6" Padding="20">
+              <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                <TextBlock Text="Aa" FontSize="38" Foreground="#9B6425" VerticalAlignment="Center" />
+                <StackPanel Grid.Column="1" Spacing="7" VerticalAlignment="Center">
+                  <Border Height="5" CornerRadius="2" Background="#D8B98E" />
+                  <Border Height="5" Width="140" HorizontalAlignment="Left" CornerRadius="2" Background="#E1C9A8" />
+                  <Border Height="5" Width="100" HorizontalAlignment="Left" CornerRadius="2" Background="#E1C9A8" />
+                </StackPanel>
+              </Grid>
+            </Border>
+            <TextBlock Text="暖色覆盖层将在后续 Windows 显示专项中扩展到全屏。" Classes="muted" TextWrapping="Wrap" />
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <Border Classes="card">
+        <StackPanel Spacing="14">
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel>
+              <TextBlock Text="自动暖色时段" Classes="section-title" />
+              <TextBlock Text="在指定时间自动开启覆盖层；手动切换后以手动设置为准" Classes="muted" Margin="0,4,0,0" TextWrapping="Wrap" />
+            </StackPanel>
+            <ToggleSwitch Grid.Column="1" IsChecked="{Binding BlueLight.BlueLightScheduleEnabled, Mode=TwoWay}" />
+          </Grid>
+          <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+            <StackPanel>
+              <TextBlock Text="开始时间" Classes="muted" />
+              <TimePicker SelectedTime="{Binding BlueLight.BlueLightScheduleStartTime, Mode=TwoWay}" IsEnabled="{Binding BlueLight.BlueLightScheduleEnabled}" Margin="0,5,0,0" />
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+              <TextBlock Text="结束时间" Classes="muted" />
+              <TimePicker SelectedTime="{Binding BlueLight.BlueLightScheduleEndTime, Mode=TwoWay}" IsEnabled="{Binding BlueLight.BlueLightScheduleEnabled}" Margin="0,5,0,0" />
+            </StackPanel>
+          </Grid>
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="18">
+          <StackPanel Spacing="5">
+            <TextBlock Text="色觉辅助" Classes="section-title" />
+            <TextBlock Text="为色弱或色盲用户提供低干扰的全屏辅助色调，覆盖所有显示器" Classes="muted" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding BlueLight.SelectedColorVisionModeOption.Description}" Classes="muted" TextWrapping="Wrap" />
+          </StackPanel>
+          <ComboBox Grid.Column="1" Width="170" ItemsSource="{Binding BlueLight.ColorVisionModeOptions}"
+                    SelectedItem="{Binding BlueLight.SelectedColorVisionModeOption, Mode=TwoWay}"
+                    VerticalAlignment="Center">
+            <ComboBox.ItemTemplate>
+              <DataTemplate x:DataType="vm:ColorVisionModeOption">
+                <TextBlock Text="{Binding Name}" />
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+        </Grid>
+      </Border>
+
+      <Border Classes="card">
+        <StackPanel Spacing="16">
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel>
+              <TextBlock Text="自定义场景" Classes="section-title" />
+              <TextBlock Text="为每个场景设置提醒、暖色、亮度和严格护眼参数" Classes="muted" Margin="0,4,0,0" TextWrapping="Wrap" />
+            </StackPanel>
+            <Button Grid.Column="1" Content="新增场景" Classes="secondary" Command="{Binding SceneManagement.AddSceneCommand}"
+                    IsEnabled="{Binding SceneManagement.IsSceneEditingEnabled}" />
+          </Grid>
+          <Grid ColumnDefinitions="210,*" ColumnSpacing="18" IsEnabled="{Binding SceneManagement.IsSceneEditingEnabled}">
+            <ListBox ItemsSource="{Binding SceneManagement.Scenes}" SelectedItem="{Binding SceneManagement.SelectedScene, Mode=TwoWay}"
+                     MinHeight="190" MaxHeight="300">
+              <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:SceneViewModel">
+                  <StackPanel Spacing="3" Margin="2,4">
+                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding ProcessNames}" Classes="muted" FontSize="11" TextTrimming="CharacterEllipsis" />
+                  </StackPanel>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+
+            <ScrollViewer Grid.Column="1" MaxHeight="330">
+              <StackPanel Spacing="10" DataContext="{Binding SceneManagement.SelectedScene}">
+                <TextBox Text="{Binding Name, Mode=TwoWay}" PlaceholderText="场景名称" />
+                <TextBox Text="{Binding ProcessNames, Mode=TwoWay}" PlaceholderText="匹配程序名，例如：code,excel" />
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                  <NumericUpDown Value="{Binding WorkMinutes, Mode=TwoWay}" Minimum="1" Maximum="180" FormatString="工作 {0} 分钟" />
+                  <NumericUpDown Grid.Column="1" Value="{Binding BreakSeconds, Mode=TwoWay}" Minimum="10" Maximum="600" FormatString="休息 {0} 秒" />
+                </Grid>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                  <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                    <TextBlock Text="暖色强度" />
+                    <TextBlock Grid.Column="1" Text="{Binding BlueLightIntensity, StringFormat='{}{0}%'}" />
+                    <Slider Grid.Row="1" Grid.ColumnSpan="2" Minimum="0" Maximum="100"
+                            Value="{Binding BlueLightIntensity, Mode=TwoWay}" Margin="0,6,0,0" />
+                  </Grid>
+                  <Grid Grid.Column="1" RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                    <TextBlock Text="显示器亮度" />
+                    <TextBlock Grid.Column="1" Text="{Binding BrightnessPercent, StringFormat='{}{0}%'}" />
+                    <Slider Grid.Row="1" Grid.ColumnSpan="2" Minimum="0" Maximum="100"
+                            Value="{Binding BrightnessPercent, Mode=TwoWay}" Margin="0,6,0,0" />
+                  </Grid>
+                </Grid>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                  <NumericUpDown Value="{Binding MaxContinuousWorkMinutes, Mode=TwoWay}" Minimum="1" Maximum="480" FormatString="最长 {0} 分钟" />
+                  <TextBlock Grid.Column="1" Text="连续用眼达到上限时优先休息" Classes="muted" VerticalAlignment="Center" TextWrapping="Wrap" />
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+                  <TextBlock Text="暖色与亮度已在上方调整" Classes="muted" VerticalAlignment="Center" TextWrapping="Wrap" />
+                  <ToggleSwitch Grid.Column="1" IsChecked="{Binding BlueLightEnabled, Mode=TwoWay}" OnContent="暖色开" OffContent="暖色关" />
+                  <ToggleSwitch Grid.Column="2" IsChecked="{Binding PauseReminders, Mode=TwoWay}" OnContent="免提醒" OffContent="提醒" />
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Text="严格模式" VerticalAlignment="Center" />
+                  <ToggleSwitch Grid.Column="1" IsChecked="{Binding StrictModeEnabled, Mode=TwoWay}" />
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Text="夜间禁用" VerticalAlignment="Center" />
+                  <ToggleSwitch Grid.Column="1" IsChecked="{Binding NightRestrictionEnabled, Mode=TwoWay}" />
+                </Grid>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10" IsVisible="{Binding NightRestrictionEnabled}">
+                  <TimePicker SelectedTime="{Binding NightRestrictionStart, Mode=TwoWay}" />
+                  <TimePicker Grid.Column="1" SelectedTime="{Binding NightRestrictionEnd, Mode=TwoWay}" />
+                </Grid>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <Button Content="应用" Classes="primary" Command="{Binding $parent[UserControl].DataContext.SceneManagement.ApplySelectedSceneCommand}" />
+                  <Button Content="保存" Classes="secondary" Command="{Binding $parent[UserControl].DataContext.SceneManagement.SaveSceneCommand}" />
+                  <Button Content="删除" Classes="quiet" Command="{Binding $parent[UserControl].DataContext.SceneManagement.DeleteSceneCommand}" />
+                </StackPanel>
+                <TextBlock Text="{Binding $parent[UserControl].DataContext.SceneManagement.SceneEditorStatus}" Classes="muted" TextWrapping="Wrap" />
+              </StackPanel>
+            </ScrollViewer>
+          </Grid>
+        </StackPanel>
+      </Border>
+
+      <TextBlock Text="场景模式" Classes="section-title" Margin="0,4,0,0" />
+      <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="14" RowSpacing="14">
+        <Border Classes="card">
+          <Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="办公模式" Classes="section-title"/><TextBlock Text="25 分钟提醒 · 暖色 35%" Classes="muted" Margin="0,5,0,0"/></StackPanel><Button Grid.Column="1" Content="使用" Classes="secondary" Command="{Binding SceneManagement.ApplyModeCommand}" CommandParameter="Office" IsEnabled="{Binding SceneManagement.IsSceneEditingEnabled}" /></Grid>
+        </Border>
+        <Border Grid.Column="1" Classes="card">
+          <Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="阅读模式" Classes="section-title"/><TextBlock Text="40 分钟提醒 · 暖色 55%" Classes="muted" Margin="0,5,0,0"/></StackPanel><Button Grid.Column="1" Content="使用" Classes="secondary" Command="{Binding SceneManagement.ApplyModeCommand}" CommandParameter="Reading" IsEnabled="{Binding SceneManagement.IsSceneEditingEnabled}" /></Grid>
+        </Border>
+        <Border Grid.Row="1" Classes="card">
+          <Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="观影模式" Classes="section-title"/><TextBlock Text="60 分钟提醒 · 暖色 30%" Classes="muted" Margin="0,5,0,0"/></StackPanel><Button Grid.Column="1" Content="使用" Classes="secondary" Command="{Binding SceneManagement.ApplyModeCommand}" CommandParameter="Movie" IsEnabled="{Binding SceneManagement.IsSceneEditingEnabled}" /></Grid>
+        </Border>
+        <Border Grid.Row="1" Grid.Column="1" Classes="card">
+          <Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="儿童模式" Classes="section-title"/><TextBlock Text="30 分钟提醒 · 休息 60 秒" Classes="muted" Margin="0,5,0,0"/></StackPanel><Button Grid.Column="1" Content="使用" Classes="secondary" Command="{Binding SceneManagement.ApplyModeCommand}" CommandParameter="Child" IsEnabled="{Binding SceneManagement.IsSceneEditingEnabled}" /></Grid>
+        </Border>
+      </Grid>
+
+      <Border Classes="card">
+        <StackPanel Spacing="16">
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel>
+              <TextBlock Text="自动场景切换" Classes="section-title" />
+              <TextBlock Text="检测后台运行的程序，临时应用对应护眼方案；程序退出后恢复手动设置" Classes="muted" Margin="0,4,0,0" TextWrapping="Wrap" />
+            </StackPanel>
+            <ToggleSwitch Grid.Column="1" IsChecked="{Binding SceneManagement.ScenarioAutomationEnabled, Mode=TwoWay}" />
+          </Grid>
+          <TextBlock Text="{Binding SceneManagement.ScenarioStatusText}" Foreground="{DynamicResource EyePrimaryBrush}" TextWrapping="Wrap" />
+          <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="14" RowSpacing="10">
+            <TextBlock Text="办公模式" VerticalAlignment="Center" />
+            <TextBox Grid.Column="1" Text="{Binding SceneManagement.OfficeProcessNames, Mode=TwoWay}" PlaceholderText="例如：devenv,code,excel" IsEnabled="{Binding SceneManagement.ScenarioAutomationEnabled}" />
+            <TextBlock Grid.Row="1" Text="阅读模式" VerticalAlignment="Center" />
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SceneManagement.ReadingProcessNames, Mode=TwoWay}" PlaceholderText="例如：kindle,edge,chrome" IsEnabled="{Binding SceneManagement.ScenarioAutomationEnabled}" />
+            <TextBlock Grid.Row="2" Text="观影模式" VerticalAlignment="Center" />
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SceneManagement.MovieProcessNames, Mode=TwoWay}" PlaceholderText="例如：vlc,potplayer" IsEnabled="{Binding SceneManagement.ScenarioAutomationEnabled}" />
+            <TextBlock Grid.Row="3" Text="儿童模式" VerticalAlignment="Center" />
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding SceneManagement.ChildProcessNames, Mode=TwoWay}" PlaceholderText="例如：minecraft,roblox" IsEnabled="{Binding SceneManagement.ScenarioAutomationEnabled}" />
+          </Grid>
+          <TextBlock Text="多个程序名用逗号或分号分隔，不需要填写 .exe 后缀。" Classes="muted" TextWrapping="Wrap" />
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

@@ -1,0 +1,102 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Styles.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="EyeBackgroundBrush" Color="#F5F8FE" />
+          <SolidColorBrush x:Key="EyeSurfaceBrush" Color="#FFFFFF" />
+          <SolidColorBrush x:Key="EyeSurfaceSubtleBrush" Color="#EFF4FC" />
+          <SolidColorBrush x:Key="EyeTextBrush" Color="#17213A" />
+          <SolidColorBrush x:Key="EyeMutedBrush" Color="#68758A" />
+          <SolidColorBrush x:Key="EyeBorderBrush" Color="#DCE5F3" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="EyeBackgroundBrush" Color="#171A20" />
+          <SolidColorBrush x:Key="EyeSurfaceBrush" Color="#22262E" />
+          <SolidColorBrush x:Key="EyeSurfaceSubtleBrush" Color="#2B303A" />
+          <SolidColorBrush x:Key="EyeTextBrush" Color="#F4F7FC" />
+          <SolidColorBrush x:Key="EyeMutedBrush" Color="#A7B0C0" />
+          <SolidColorBrush x:Key="EyeBorderBrush" Color="#39414E" />
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+      <SolidColorBrush x:Key="EyePrimaryBrush" Color="#3D72F6" />
+      <SolidColorBrush x:Key="EyePrimarySoftBrush" Color="#E7EFFF" />
+      <SolidColorBrush x:Key="EyeSuccessBrush" Color="#2DB879" />
+      <SolidColorBrush x:Key="EyeWarningBrush" Color="#F29A38" />
+      <SolidColorBrush x:Key="EyeDangerBrush" Color="#E85A68" />
+    </ResourceDictionary>
+  </Styles.Resources>
+
+  <Style Selector="Window">
+    <Setter Property="Background" Value="{DynamicResource EyeBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource EyeTextBrush}" />
+    <Setter Property="FontFamily" Value="Inter, Microsoft YaHei UI" />
+  </Style>
+
+  <Style Selector="Border.card">
+    <Setter Property="Background" Value="{DynamicResource EyeSurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource EyeBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="8" />
+    <Setter Property="Padding" Value="20" />
+  </Style>
+
+  <Style Selector="TextBlock.page-title">
+    <Setter Property="FontSize" Value="24" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="TextBlock.section-title">
+    <Setter Property="FontSize" Value="16" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="TextBlock.metric">
+    <Setter Property="FontSize" Value="26" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="TextBlock.muted">
+    <Setter Property="Foreground" Value="{DynamicResource EyeMutedBrush}" />
+  </Style>
+
+  <Style Selector="Button.primary">
+    <Setter Property="Background" Value="{DynamicResource EyePrimaryBrush}" />
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="Padding" Value="18,9" />
+    <Setter Property="CornerRadius" Value="6" />
+  </Style>
+  <Style Selector="Button.secondary">
+    <Setter Property="Background" Value="{DynamicResource EyePrimarySoftBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource EyePrimaryBrush}" />
+    <Setter Property="Padding" Value="18,9" />
+    <Setter Property="CornerRadius" Value="6" />
+  </Style>
+  <Style Selector="Button.quiet">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Padding" Value="12,8" />
+    <Setter Property="CornerRadius" Value="6" />
+  </Style>
+
+  <Style Selector="ListBox.sidebar">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+  <Style Selector="ListBox.sidebar > ListBoxItem">
+    <Setter Property="Padding" Value="12,10" />
+    <Setter Property="Margin" Value="0,2" />
+    <Setter Property="CornerRadius" Value="6" />
+  </Style>
+  <Style Selector="ListBox.sidebar > ListBoxItem:selected">
+    <Setter Property="Background" Value="{DynamicResource EyePrimarySoftBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource EyePrimaryBrush}" />
+  </Style>
+  <Style Selector="ListBox.sidebar > ListBoxItem:selected TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource EyePrimaryBrush}" />
+  </Style>
+
+  <Style Selector="TabControl.pages /template/ TabStrip">
+    <Setter Property="IsVisible" Value="False" />
+  </Style>
+  <Style Selector="TabControl.pages > Border">
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+</Styles>

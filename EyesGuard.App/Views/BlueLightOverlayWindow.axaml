@@ -1,0 +1,10 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="EyesGuard.App.Views.BlueLightOverlayWindow"
+        WindowDecorations="None"
+        ShowInTaskbar="False"
+        CanResize="False"
+        ShowActivated="False"
+        Topmost="True"
+        IsHitTestVisible="False">
+</Window>

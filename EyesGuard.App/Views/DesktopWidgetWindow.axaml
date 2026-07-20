@@ -1,0 +1,67 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:EyesGuard.App.ViewModels"
+        x:Class="EyesGuard.App.Views.DesktopWidgetWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="护眼小部件"
+        Width="280" Height="214"
+        MinWidth="280" MinHeight="214"
+        MaxWidth="280" MaxHeight="214"
+        CanResize="False"
+        ShowInTaskbar="False"
+        Topmost="True"
+        WindowDecorations="None"
+        WindowStartupLocation="Manual"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent">
+  <Border CornerRadius="8"
+          Background="{DynamicResource EyeSurfaceBrush}"
+          BorderBrush="{Binding Widget.WidgetAccentColor}"
+          BorderThickness="1">
+    <Border.ContextFlyout>
+      <MenuFlyout>
+        <MenuItem Header="立即休息" Command="{Binding BreakControl.StartBreakCommand}" />
+        <MenuItem Header="隐藏小部件" Command="{Binding ToggleDesktopWidgetCommand}" />
+      </MenuFlyout>
+    </Border.ContextFlyout>
+
+    <Grid RowDefinitions="44,*,Auto">
+      <Border Background="{Binding Widget.WidgetAccentColor}"
+              CornerRadius="7,7,0,0"
+              PointerPressed="OnHeaderPointerPressed">
+        <Grid ColumnDefinitions="Auto,*,Auto" Margin="14,0,8,0">
+          <Ellipse Width="10" Height="10" Fill="White" VerticalAlignment="Center" />
+          <TextBlock Grid.Column="1" Text="护眼助手" Foreground="White"
+                     FontWeight="SemiBold" VerticalAlignment="Center" Margin="9,0,0,0" />
+          <Button Grid.Column="2" Content="×" Width="32" Height="32"
+                  Padding="0" FontSize="20" Foreground="White" Background="Transparent"
+                  ToolTip.Tip="隐藏小部件"
+                  Command="{Binding ToggleDesktopWidgetCommand}" />
+        </Grid>
+      </Border>
+
+      <Grid Grid.Row="1" ColumnDefinitions="Auto,*" ColumnSpacing="16" Margin="18,16,18,12">
+        <Panel Width="82" Height="82">
+          <Ellipse Stroke="{DynamicResource EyeSurfaceSubtleBrush}" StrokeThickness="8" />
+          <Ellipse Stroke="{Binding Widget.WidgetAccentColor}" StrokeThickness="8"
+                   StrokeDashArray="8,2" />
+          <TextBlock Text="{Binding BreakControl.NextBreakText}" FontSize="17" FontWeight="SemiBold"
+                     HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Panel>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="5">
+          <TextBlock Text="{Binding Widget.WidgetStatusText}" FontSize="17" FontWeight="SemiBold" />
+          <TextBlock Text="{Binding Widget.WidgetMessage}" Classes="muted"
+                     MaxWidth="145" TextWrapping="Wrap" />
+          <TextBlock Text="{Binding BreakControl.SessionText, StringFormat='连续用眼 {0}'}" FontSize="12" />
+        </StackPanel>
+      </Grid>
+
+      <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="18,0,18,14">
+        <ProgressBar Value="{Binding BreakControl.WorkProgress}" Minimum="0" Maximum="100"
+                     Height="5" VerticalAlignment="Center" />
+        <Button Grid.Column="1" Content="休息" Classes="secondary" Padding="14,6"
+                Margin="14,0,0,0" Command="{Binding BreakControl.StartBreakCommand}" />
+      </Grid>
+    </Grid>
+  </Border>
+</Window>

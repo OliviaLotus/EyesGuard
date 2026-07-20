@@ -1,0 +1,101 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:EyesGuard.App.ViewModels"
+             x:Class="EyesGuard.App.Views.ReportsView"
+             x:DataType="vm:MainWindowViewModel">
+  <ScrollViewer>
+    <StackPanel Margin="28" Spacing="18">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel><TextBlock Text="统计报告" Classes="page-title"/><TextBlock Text="查看每日、每周和最近 30 天的用眼表现" Classes="muted" Margin="0,5,0,0"/></StackPanel>
+        <StackPanel Grid.Column="1" HorizontalAlignment="Right" Spacing="5">
+          <Button Content="刷新报告" Classes="secondary" Command="{Binding Dashboard.RefreshReportCommand}" HorizontalAlignment="Right" />
+          <TextBlock Text="{Binding Dashboard.ReportUpdatedText}" Classes="muted" FontSize="11" HorizontalAlignment="Right" />
+        </StackPanel>
+      </Grid>
+
+      <UniformGrid Columns="4" Rows="1">
+        <Border Classes="card" Margin="0,0,10,0"><StackPanel><TextBlock Text="今日用眼" Classes="muted"/><TextBlock Text="{Binding Dashboard.TodayUsageText}" Classes="metric" Margin="0,8,0,0"/></StackPanel></Border>
+        <Border Classes="card" Margin="0,0,10,0"><StackPanel><TextBlock Text="最长连续用眼" Classes="muted"/><TextBlock Text="{Binding Dashboard.LongestSessionText}" Classes="metric" Margin="0,8,0,0"/></StackPanel></Border>
+        <Border Classes="card" Margin="0,0,10,0"><StackPanel><TextBlock Text="休息完成率" Classes="muted"/><TextBlock Text="{Binding Dashboard.CompletionRate, StringFormat='{}{0}%'}" Classes="metric" Margin="0,8,0,0"/></StackPanel></Border>
+        <Border Classes="card"><StackPanel><TextBlock Text="夜间用眼" Classes="muted"/><TextBlock Text="{Binding Dashboard.NightUsageText}" Classes="metric" Margin="0,8,0,0"/></StackPanel></Border>
+      </UniformGrid>
+
+      <Border Classes="card">
+        <Grid ColumnDefinitions="*,*,*">
+          <StackPanel>
+            <TextBlock Text="近 7 天日均" Classes="muted" />
+            <TextBlock Text="{Binding Dashboard.WeeklyAverageUsageText}" Classes="metric" Margin="0,6,0,0" />
+          </StackPanel>
+          <StackPanel Grid.Column="1">
+            <TextBlock Text="与上周对比" Classes="muted" />
+            <TextBlock Text="{Binding Dashboard.WeeklyTrendText}" FontSize="18" FontWeight="SemiBold" Margin="0,9,0,0" TextWrapping="Wrap" />
+          </StackPanel>
+          <StackPanel Grid.Column="2">
+            <TextBlock Text="每日目标" Classes="muted" />
+            <TextBlock Text="{Binding Dashboard.GoalComparisonText}" FontSize="18" FontWeight="SemiBold" Margin="0,9,0,0" TextWrapping="Wrap" />
+          </StackPanel>
+        </Grid>
+      </Border>
+
+      <Border Classes="card">
+        <StackPanel Spacing="18">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Text="最近 7 天" Classes="section-title" />
+            <TextBlock Grid.Column="1" Text="每日用眼趋势" Classes="muted" />
+          </Grid>
+          <ItemsControl ItemsSource="{Binding Dashboard.RecentDays}" Height="190">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate><UniformGrid Rows="1" /></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:DailyBarItem">
+                <Grid RowDefinitions="*,Auto,Auto" Margin="8,0">
+                  <Border Grid.Row="0" Width="34" Height="{Binding Height}"
+                          VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                          CornerRadius="4,4,0,0" Background="{DynamicResource EyePrimaryBrush}"
+                          ToolTip.Tip="{Binding Value}" />
+                  <TextBlock Grid.Row="1" Text="{Binding Value}" FontSize="11" HorizontalAlignment="Center" Margin="0,7,0,0" />
+                  <TextBlock Grid.Row="2" Text="{Binding Label}" Classes="muted" FontSize="11" HorizontalAlignment="Center" Margin="0,3,0,0" />
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card">
+        <StackPanel Spacing="18">
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel>
+              <TextBlock Text="最近 30 天" Classes="section-title" />
+              <TextBlock Text="{Binding Dashboard.MonthlyAverageUsageText, StringFormat='日均 {0}'}" Classes="muted" Margin="0,4,0,0" />
+            </StackPanel>
+            <TextBlock Grid.Column="1" Text="月度用眼趋势" Classes="muted" VerticalAlignment="Center" />
+          </Grid>
+          <ItemsControl ItemsSource="{Binding Dashboard.MonthlyDays}" Height="170">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate><UniformGrid Rows="1" /></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:DailyBarItem">
+                <Grid RowDefinitions="*,Auto" Margin="1,0">
+                  <Border Width="12" Height="{Binding Height}"
+                          VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                          CornerRadius="2,2,0,0" Background="{DynamicResource EyePrimaryBrush}"
+                          ToolTip.Tip="{Binding Value}" />
+                  <TextBlock Grid.Row="1" Text="{Binding Label}" IsVisible="{Binding IsLabelVisible}"
+                             Classes="muted" FontSize="9" HorizontalAlignment="Center" Margin="0,5,0,0" />
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+
+      <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+        <Border Classes="card"><StackPanel Spacing="10"><TextBlock Text="健康评分" Classes="section-title"/><TextBlock Text="{Binding Dashboard.HealthScore, StringFormat='{}{0}分'}" Classes="metric" Foreground="{DynamicResource EyeSuccessBrush}"/><TextBlock Text="评分综合每日用眼、休息完成情况和夜间使用时长。" Classes="muted" TextWrapping="Wrap"/></StackPanel></Border>
+        <Border Grid.Column="1" Classes="card"><StackPanel Spacing="10"><TextBlock Text="本周建议" Classes="section-title"/><TextBlock Text="{Binding Dashboard.WeeklyAdviceText}" TextWrapping="Wrap"/><TextBlock Text="报告由本机数据自动生成。" Classes="muted"/></StackPanel></Border>
+      </Grid>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

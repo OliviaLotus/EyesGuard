@@ -1,0 +1,81 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:EyesGuard.App.ViewModels"
+             x:Class="EyesGuard.App.Views.ReminderSettingsView"
+             x:DataType="vm:MainWindowViewModel">
+  <ScrollViewer>
+    <StackPanel Margin="28" Spacing="18">
+      <StackPanel><TextBlock Text="提醒设置" Classes="page-title"/><TextBlock Text="调整工作周期、休息时长和空闲判定" Classes="muted" Margin="0,5,0,0"/></StackPanel>
+
+      <Border Classes="card">
+        <StackPanel Spacing="20">
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel><TextBlock Text="启用休息提醒" Classes="section-title"/><TextBlock Text="根据键盘和鼠标活动计算连续用眼时间" Classes="muted" Margin="0,4,0,0"/></StackPanel>
+            <ToggleSwitch Grid.Column="1" IsChecked="{Binding Settings.IsProtectionEnabled, Mode=TwoWay}" />
+          </Grid>
+          <Separator />
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel><TextBlock Text="连续用眼时长"/><TextBlock Text="达到该时长后弹出休息提醒" Classes="muted" Margin="0,4,0,0"/></StackPanel>
+            <NumericUpDown Grid.Column="1" Value="{Binding Settings.WorkMinutes, Mode=TwoWay}" Minimum="1" Maximum="180" Increment="1" Width="120" FormatString="0 分钟" />
+          </Grid>
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel><TextBlock Text="休息倒计时"/><TextBlock Text="建议至少休息 20 秒" Classes="muted" Margin="0,4,0,0"/></StackPanel>
+            <NumericUpDown Grid.Column="1" Value="{Binding Settings.BreakSeconds, Mode=TwoWay}" Minimum="10" Maximum="600" Increment="5" Width="120" FormatString="0 秒" />
+          </Grid>
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel><TextBlock Text="推迟时间"/><TextBlock Text="选择推迟后等待多长时间再次提醒" Classes="muted" Margin="0,4,0,0"/></StackPanel>
+            <NumericUpDown Grid.Column="1" Value="{Binding Settings.SnoozeMinutes, Mode=TwoWay}" Minimum="1" Maximum="60" Increment="1" Width="120" FormatString="0 分钟" />
+          </Grid>
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel><TextBlock Text="空闲重置阈值"/><TextBlock Text="持续无操作达到该时长后视为已经离开屏幕" Classes="muted" Margin="0,4,0,0"/></StackPanel>
+            <NumericUpDown Grid.Column="1" Value="{Binding Settings.IdleResetMinutes, Mode=TwoWay}" Minimum="1" Maximum="30" Increment="1" Width="120" FormatString="0 分钟" />
+          </Grid>
+          <Separator />
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel><TextBlock Text="严格护眼模式" Classes="section-title"/><TextBlock Text="达到最长连续用眼时长后必须完成休息，不能跳过或推迟" Classes="muted" Margin="0,4,0,0" TextWrapping="Wrap"/></StackPanel>
+            <ToggleSwitch Grid.Column="1" IsChecked="{Binding Settings.StrictModeEnabled, Mode=TwoWay}" />
+          </Grid>
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel><TextBlock Text="最长连续用眼"/><TextBlock Text="严格模式下的强制休息上限" Classes="muted" Margin="0,4,0,0"/></StackPanel>
+            <NumericUpDown Grid.Column="1" Value="{Binding Settings.MaxContinuousWorkMinutes, Mode=TwoWay}" Minimum="1" Maximum="480" Increment="5" Width="120" FormatString="0 分钟" />
+          </Grid>
+          <Button Content="保存提醒计划" Classes="primary" Command="{Binding Settings.SaveSettingsCommand}" HorizontalAlignment="Right" />
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card">
+        <Grid ColumnDefinitions="*,Auto">
+          <StackPanel Spacing="10">
+            <StackPanel><TextBlock Text="勿扰时段" Classes="section-title"/><TextBlock Text="指定时间内不弹出休息提醒，但仍会记录用眼时长。" Classes="muted" Margin="0,5,0,0"/></StackPanel>
+            <Grid ColumnDefinitions="Auto,150,Auto,150" ColumnSpacing="10">
+              <TextBlock Text="开始" VerticalAlignment="Center" />
+              <TimePicker Grid.Column="1" SelectedTime="{Binding Settings.DoNotDisturbStartTime, Mode=TwoWay}" />
+              <TextBlock Grid.Column="2" Text="结束" VerticalAlignment="Center" />
+              <TimePicker Grid.Column="3" SelectedTime="{Binding Settings.DoNotDisturbEndTime, Mode=TwoWay}" />
+            </Grid>
+          </StackPanel>
+          <ToggleSwitch Grid.Column="1" IsChecked="{Binding Settings.DoNotDisturbEnabled, Mode=TwoWay}" VerticalAlignment="Top" />
+        </Grid>
+      </Border>
+
+      <Border Classes="card">
+        <Grid ColumnDefinitions="*,Auto">
+          <StackPanel Spacing="10">
+            <StackPanel><TextBlock Text="夜间禁用" Classes="section-title"/><TextBlock Text="指定时间内停止累计用眼并暂停提醒，适合儿童或睡前管理。" Classes="muted" Margin="0,5,0,0" TextWrapping="Wrap"/></StackPanel>
+            <Grid ColumnDefinitions="Auto,150,Auto,150" ColumnSpacing="10">
+              <TextBlock Text="开始" VerticalAlignment="Center" />
+              <TimePicker Grid.Column="1" SelectedTime="{Binding Settings.NightRestrictionStartTime, Mode=TwoWay}" />
+              <TextBlock Grid.Column="2" Text="结束" VerticalAlignment="Center" />
+              <TimePicker Grid.Column="3" SelectedTime="{Binding Settings.NightRestrictionEndTime, Mode=TwoWay}" />
+            </Grid>
+          </StackPanel>
+          <ToggleSwitch Grid.Column="1" IsChecked="{Binding Settings.NightRestrictionEnabled, Mode=TwoWay}" VerticalAlignment="Top" />
+        </Grid>
+      </Border>
+
+      <Border Background="{DynamicResource EyePrimarySoftBrush}" CornerRadius="8" Padding="18">
+        <TextBlock Text="空闲时间只读取系统最后输入时间，不记录按键内容、鼠标位置或屏幕画面。" Foreground="{DynamicResource EyePrimaryBrush}" TextWrapping="Wrap" />
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

@@ -1,0 +1,6 @@
+{
+  "version": "0.1.1",
+  "downloadUrl": "https://updates.example.com/EyesGuard-Setup-0.1.1.exe",
+  "sha256": "PUT_SHA256_HEX_HERE",
+  "releaseNotes": "修复问题并改进稳定性"
+}

@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:EyesGuard.App.ViewModels"
+             x:Class="EyesGuard.App.Views.SettingsView"
+             x:DataType="vm:MainWindowViewModel">
+  <ScrollViewer>
+    <StackPanel Margin="28" Spacing="18">
+      <StackPanel><TextBlock Text="设置" Classes="page-title"/><TextBlock Text="管理应用外观、数据与隐私" Classes="muted" Margin="0,5,0,0"/></StackPanel>
+      <Border Classes="card">
+        <StackPanel Spacing="20">
+          <TextBlock Text="外观" Classes="section-title" />
+          <Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="跟随系统主题"/><TextBlock Text="自动使用系统的亮色或深色外观" Classes="muted" Margin="0,4,0,0"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding Settings.FollowSystemTheme, Mode=TwoWay}" /></Grid>
+          <Separator />
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel><TextBlock Text="桌面小部件"/><TextBlock Text="在桌面显示连续用眼时长和下次休息倒计时" Classes="muted" Margin="0,4,0,0" TextWrapping="Wrap"/></StackPanel>
+            <ToggleSwitch Grid.Column="1" IsChecked="{Binding Settings.DesktopWidgetEnabled, Mode=TwoWay}" />
+          </Grid>
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel><TextBlock Text="开机启动"/><TextBlock Text="登录 Windows 后自动在后台运行护眼助手" Classes="muted" Margin="0,4,0,0" TextWrapping="Wrap"/></StackPanel>
+            <ToggleSwitch Grid.Column="1" IsChecked="{Binding Startup.StartWithWindows, Mode=TwoWay}" />
+          </Grid>
+          <Separator />
+          <TextBlock Text="状态" Classes="section-title" />
+          <Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="护眼后台服务"/><TextBlock Text="{Binding StatusMessage}" Classes="muted" Margin="0,4,0,0"/></StackPanel><TextBlock Grid.Column="1" Text="运行中" Foreground="{DynamicResource EyeSuccessBrush}" VerticalAlignment="Center" /></Grid>
+          <Grid ColumnDefinitions="*,Auto" Margin="0,12,0,0"><StackPanel><TextBlock Text="多设备同步"/><TextBlock Text="{Binding Sync.SyncStatusText}" Classes="muted" Margin="0,4,0,0" TextWrapping="Wrap"/></StackPanel><TextBlock Grid.Column="1" Text="{Binding Sync.PendingSyncCount, StringFormat='待同步 {0} 条'}" Classes="muted" VerticalAlignment="Center" /></Grid>
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card">
+        <StackPanel Spacing="16">
+          <TextBlock Text="数据与隐私" Classes="section-title" />
+          <TextBlock Text="EyesGuard 只保存用眼时长、休息结果和应用设置，不采集屏幕内容、摄像头图像或具体输入内容。" TextWrapping="Wrap" />
+          <TextBlock Text="数据位置：%LOCALAPPDATA%\EyesGuard\eyesguard.db" Classes="muted" />
+          <TextBlock Text="SQLite 使用 WAL 模式，活动时长每 30 秒批量写入。" Classes="muted" />
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card">
+        <StackPanel Spacing="12">
+          <TextBlock Text="应用更新" Classes="section-title" />
+          <TextBlock Text="更新清单需返回 version、downloadUrl、sha256 和 releaseNotes 字段；未配置服务器时不会联网。" Classes="muted" TextWrapping="Wrap" />
+          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+            <TextBox Text="{Binding Settings.UpdateManifestUrl, Mode=TwoWay}" PlaceholderText="HTTPS 更新清单地址" />
+            <Button Grid.Column="1" Content="检查更新" Classes="secondary" Command="{Binding Update.CheckForUpdatesCommand}" CommandParameter="{Binding Settings.UpdateManifestUrl}" />
+          </Grid>
+          <Button Content="下载并安装新版本" Classes="primary" Command="{Binding Update.InstallUpdateCommand}"
+                  IsEnabled="{Binding Update.UpdateAvailable}" HorizontalAlignment="Left" />
+          <TextBlock Text="{Binding Update.UpdateStatusText}" Classes="muted" TextWrapping="Wrap" />
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card">
+        <Grid ColumnDefinitions="*,Auto">
+          <StackPanel><TextBlock Text="关于护眼助手" Classes="section-title"/><TextBlock Text="Avalonia 12 · .NET 10 · 本地优先" Classes="muted" Margin="0,5,0,0"/></StackPanel>
+          <TextBlock Grid.Column="1" Text="0.1.0" Classes="muted" VerticalAlignment="Center" />
+        </Grid>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

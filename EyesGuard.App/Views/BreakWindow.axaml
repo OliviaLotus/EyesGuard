@@ -1,0 +1,52 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:EyesGuard.App.ViewModels"
+        x:Class="EyesGuard.App.Views.BreakWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="休息提醒"
+        Width="500" Height="610"
+        MinWidth="420" MinHeight="540"
+        CanResize="False"
+        Topmost="True"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterScreen"
+        Background="#2C755B">
+  <Grid RowDefinitions="*,Auto" Margin="36">
+    <StackPanel VerticalAlignment="Center" Spacing="18">
+      <TextBlock Text="休息一下，放松眼睛" FontSize="28" FontWeight="SemiBold"
+                 Foreground="White" HorizontalAlignment="Center" />
+      <TextBlock Text="请远眺约 6 米外的物体，让眼睛自然放松"
+                 Foreground="#D8F2E7" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+
+      <Border Width="190" Height="190" CornerRadius="95" BorderThickness="12"
+              BorderBrush="#72D4A8" Background="#183E31" HorizontalAlignment="Center" Margin="0,10">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+          <TextBlock Text="{Binding BreakControl.RestRemainingText}" FontSize="58" FontWeight="SemiBold"
+                     Foreground="White" HorizontalAlignment="Center" />
+          <TextBlock Text="秒" Foreground="#BDE7D6" HorizontalAlignment="Center" />
+        </StackPanel>
+      </Border>
+
+      <TextBlock Text="点击立即休息开始倒计时" Foreground="#D8F2E7"
+                 HorizontalAlignment="Center" IsVisible="{Binding BreakControl.IsBreakPrompt}" />
+      <TextBlock Text="保持眺望，倒计时结束后自动回到工作状态" Foreground="#D8F2E7"
+                 HorizontalAlignment="Center" TextAlignment="Center" IsVisible="{Binding BreakControl.IsResting}" />
+      <TextBlock Text="严格模式：请完成休息倒计时后继续使用" Foreground="#FFE5C2"
+                 HorizontalAlignment="Center" TextAlignment="Center" IsVisible="{Binding BreakControl.StrictModeEnabled}" />
+
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
+        <Button Content="立即休息" Classes="primary" Command="{Binding BreakControl.StartBreakCommand}"
+                IsVisible="{Binding BreakControl.IsBreakPrompt}" />
+        <Button Content="推迟 5 分钟" Classes="secondary" Command="{Binding BreakControl.SnoozeCommand}"
+                IsVisible="{Binding BreakControl.CanDeferBreak}" />
+        <Button Content="跳过" Classes="quiet" Foreground="White" Command="{Binding BreakControl.SkipCommand}"
+                IsVisible="{Binding BreakControl.CanDeferBreak}" />
+      </StackPanel>
+    </StackPanel>
+
+    <Border Grid.Row="1" Background="#28664F" CornerRadius="8" Padding="14">
+      <TextBlock Text="小贴士：眨眼可以润滑眼睛，缓解眼部疲劳。"
+                 Foreground="#D8F2E7" TextWrapping="Wrap" />
+    </Border>
+  </Grid>
+</Window>
